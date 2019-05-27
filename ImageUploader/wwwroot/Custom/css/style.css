@@ -1,0 +1,16 @@
+﻿/*COMMAND + SHIFT + R for stylesheet to work*/
+/* https://stackoverflow.com/questions/6303053/css-is-not-being-applied-after-changes */
+body {
+}
+
+h3, label {
+    color: white;
+    /*color: black;*/
+}
+
+
+.card-outline-secondary {
+    background-color: black;
+}
+
+

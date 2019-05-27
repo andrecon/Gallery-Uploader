@@ -1,0 +1,57 @@
+﻿<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>@ViewBag.Title</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="description" content="ASP.NET Core 2.1 - Image Uploader Project" />
+        <meta name="author" content="ASP.NET Core 2.1 - Image Uploader" />
+
+        <!-- Bootstrap -->
+        <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+        <!-- Our CSS -->
+        <link href="~/Custom/css/style.css" rel="stylesheet" />
+
+        <!-- Font Awsome -->
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
+
+
+    </head>
+    <body>
+
+        <nav class="navbar navbar-expand-sm bg-secondary navbar-dark">
+            <ul class="navbar-nav">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">ImageUploader</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Github</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link disabled" href="#">andrecon</a>
+                </li>
+            </ul>
+        </nav>
+
+
+        <div>
+            @RenderBody()
+        </div>
+
+        <!-- JQuery -->
+        <script src="~/lib/jquery/jquery.min.js"></script>
+
+        <!-- Bootstrap JS Library -->
+        <script src="~/lib/popper.js/dist/umd/popper.min.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+
+        <!-- Our JavaScript -->
+        <script src="~/Custom/js/custom.js"></script>
+
+    </body>
+</html>
