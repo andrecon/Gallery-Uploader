@@ -409,3 +409,6 @@ wwwroot/Uploads/Gallery/*
 
 # Ignore my Migrations
 ImageUploader/Migrations/
+
+#Ignore my appsettings.json file
+appsettings.json
