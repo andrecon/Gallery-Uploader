@@ -35,9 +35,46 @@ function loadGalleries(result)
     {
         for(i in result)
         {
-            $("#selectImageGallery").append("<option value=' " + result[i] + " '>" + result[i] + "</option>");
+
+            $("#selectImageGallery").append("<option value=' " + result[i].gelleryID + " '>" + result[i].title + "</option>");
         }
     }
+}
+
+//load a slider from the gallery IDs. 
+function loadSlider(value)
+{
+    //Using AJAX [HttpGet("{id}")] so we specify id in the url
+    $.ajax({
+        type: 'GET',
+        url: '/api/Gallery/' + value,
+        dataType: 'json',
+        success: function(data)
+        {
+            //empty image slider
+            $(".swiper-wrapper").html("");
+            //Break Package into key value pairs 
+            $.each(data, function(key, value)
+            {
+                //Send these key value pairs to swiper.js
+                //Dynamically create our slides
+                $('.swiper-wrapper').append("<div class='swiper-slide'><img width='100%' height='500px' src='" + value.image_Path +"' />" + value.image_Caption + "</div>");
+                
+
+            });
+
+            var swiper = new Swiper('.swiper-container', {
+                  pagination: {
+                    el: '.swiper-pagination',
+                    type: 'progressbar',
+                  },
+                  navigation: {
+                    nextEl: '.swiper-button-next',
+                    prevEl: '.swiper-button-prev',
+                  },
+             });
+        }
+    });
 }
 
 function AjaxPost(formdata)
@@ -227,4 +264,44 @@ function BuildImageTableRow(image)
 
     return newRow;
     
+}
+
+function deleteGallery()
+{
+    var id = $("#selectImageGallery").val();
+
+    //Adding a bootstrap model to ask if they want to proceed with the deleteion
+    $("#DeleteGalleryModal").modal('show');
+
+    $("#DeleteGalleryModal .modal-title").html("Delete Confirmation");
+    $("#DeleteGalleryModal .modal-body").html("Do you want to delete " + "<strong class='text-danger'><span id='toDeleteGL'>" + id + "</span></stong>" + " Gallery?");
+}
+
+function confimDeleteGallery()
+{
+    var idGl = $("#toDeleteGL").text();
+
+    //Handle the deletion
+    var ajaxOptions = {};
+
+    ajaxOptions.url = "/api/Gallery/" + idGl;
+    ajaxOptions.type = "DELETE";
+    ajaxOptions.dataType = "json";
+    ajaxOptions.success = function ()
+    {
+        $("#DeleteGalleryModal").modal('hide');
+        alert("Deleted Gallery" + idGl);
+    };
+
+    ajaxOptions.error = function()
+    {
+        alert("Could not delete Gallery");
+    };
+
+    $.ajax(ajaxOptions);
+}
+
+function editGallery()
+{
+
 }

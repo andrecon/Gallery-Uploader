@@ -1,16 +1,29 @@
 ﻿/*COMMAND + SHIFT + R for stylesheet to work*/
 /* https://stackoverflow.com/questions/6303053/css-is-not-being-applied-after-changes */
-body {
-}
 
+@import url('https://fonts.googleapis.com/css?family=Open+Sans');
+@import url('https://fonts.googleapis.com/css?family=Montserrat');
+
+/*
 h3, label {
-    color: white;
-    /*color: black;*/
+
+    color: black;
+}*/
+
+body {
+    font-family: 'Montserrat', sans-serif;
 }
 
-
-.card-outline-secondary {
-    background-color: black;
+.swiper-container {
+    background-color: #6c757d;
+    text-transform: uppercase;
+    text-align: center;
+    font-weight: bold;
+    color: #fff;
 }
 
-
+.swiper-container :hover {
+    box-shadow: black;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}

@@ -59,13 +59,86 @@
                         <div class="input-group-prepend">
                             <label class="input-group-text" for="selectImageGallery"> Options </label>
                         </div>
-                        <select class="custom-select" id="selectImageGallery">
+                        <select class="custom-select" id="selectImageGallery" onchange="loadSlider(this.value)">
                             <option selected> Select Gallery ID </option>
                         </select>
+                        <div class="input-group-append">
+                            <button class="btn btn-warning" onclick="editGallery()"> <i class="fa fa-pencil-alt"></i></button>
+                        </div>
+                        <div class="input-group-append">
+                            <button class="btn btn-danger" onclick="deleteGallery()"> <i class="fa fa-trash"></i></button>
+                        </div>
                     </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="swiper-container">
+                    <div class="swiper-wrapper">
+
+                    </div>
+                    <!-- Add Pagination -->
+                    <div class="swiper-pagination"></div>
+                    <!-- Add Arrows -->
+                    <div class="swiper-button-next"></div>
+                    <div class="swiper-button-prev"></div>
                 </div>
             </div>
         </div>
 
+    </div>
+</div>
+
+<!-- Model Delete Gallery -->
+<div class="modal fade " id="DeleteGalleryModal" role="dialog" aria-labelledby="DeleteGalleryModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <form>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="DeleteGalleryModalLabel"> <i class="fa fa-clipboard-check"></i></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                    <button id="btnYesMake" type="button" class="btn btn-primary" onclick="confimDeleteGallery()">Yes</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<!-- Model Edit Gallery -->
+<div class="modal fade " id="EditGalleryModal" role="dialog" aria-labelledby="EditGalleryModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <!-- If problems, change id="galleryId" -->
+                <span hidden id="galleryID"></span>
+                <h5 class="modal-title" id="EditGalleryModalLabel"><i class="fa fa-clipboard-check"></i></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="EditGallery" method="post" enctype="multipart/form-data" onsubmit="return event.preventDefault(), AjaxUpdateGallery(this)">
+                <div class="model-body">
+                    <div class="form-group">
+                        <label class="col-md-12"> Gallery Title </label>
+                        <input id="GalleryTitleEdit" name="GalleryTitleEdit" class="form-control" placeholder="Enter Title for Gallery" /> 
+                    </div>
+                    <div class="form-group" style="margin-bottom:10px; margin-top: 5px; ">
+                        <table id="EditGalleryTable" class="table table-bordered table-hover" style="margin:auto"></table> 
+                    </div>
+                </div>
+                <div class="model-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal"> No </button> 
+                    <button id="btnEditYes" class="btn btn-primary"> Save </button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>

@@ -35,7 +35,7 @@ namespace ImageUploader.Controllers
         public IActionResult GetImageGallery()
         {
             var result = _db.Galleries.ToList();
-            return Ok(result.Select(t => t.GelleryID));
+            return Ok(result.Select(t => new { t.GelleryID, t.Title }));
         }
 
         //testing it: https://localhost:5001/api/gallery/3   3 being the id that were looking for
@@ -54,12 +54,12 @@ namespace ImageUploader.Controllers
                          on gallery.GelleryID equals images.GalleryId
                          select new
                          {
-                             Gallery_Id = gallery.GelleryID,
-                             Gallery_Title = gallery.Title,
-                             Gallery_Path = gallery.GalleryUrl,
-                             Image_Id = images.ImageID,
-                             Image_Path = images.ImageUrl,
-                             Image_Caption = images.Caption
+                             gallery_Id = gallery.GelleryID,
+                             gallery_Title = gallery.Title,
+                             gallery_Path = gallery.GalleryUrl,
+                             image_Id = images.ImageID,
+                             image_Path = images.ImageUrl,
+                             image_Caption = images.Caption
                          };
             if(result == null)
             {
@@ -157,7 +157,60 @@ namespace ImageUploader.Controllers
             return id;
         }
 
+        //Method to delete gallery from database
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteGallery([FromRoute] int id)
+        {
+            //Is our Model state valid?
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
-     
+            //Will find the gallery by its id provided
+            var findGallery = await _db.Galleries.FindAsync(id);
+
+            //If the result was null
+            if(findGallery == null)
+            {
+                return NotFound();
+            }
+
+            //If gallery with the id was found, remove it from database
+            _db.Galleries.Remove(findGallery);
+
+            //Now we need to delete the gallery folder from the server
+            DeleteGalleryDirectory(id);
+
+            await _db.SaveChangesAsync();
+
+            //Return Success result to the cline/browser
+            return new JsonResult("Gallery Deleted : " + id);
+        }
+
+        //Method to delete gallery folder from server
+        private void DeleteGalleryDirectory(int id)
+        {
+            //Getting the path from the Gallery folder
+            string GalleryPath = Path.Combine(_env.WebRootPath + $"{Path.DirectorySeparatorChar}Uploads{Path.DirectorySeparatorChar}Gallery{Path.DirectorySeparatorChar}", id.ToString());
+
+            //Storing ll the files with the gallery folder in this array
+            string[] files = Directory.GetFiles(GalleryPath);
+
+            //Check if the gallery folder with that id exist
+            if(Directory.Exists(GalleryPath))
+            {
+                //If it exist, delete the files inside the gallery first
+                foreach (var file in files)
+                {
+                    //Change file permission to normal so we can delete files
+                    System.IO.File.SetAttributes(file, FileAttributes.Normal);
+                    System.IO.File.Delete(file);
+                }
+
+                //Now we can delete the gallery path.
+                Directory.Delete(GalleryPath);
+            }
+        }
     }
 }
