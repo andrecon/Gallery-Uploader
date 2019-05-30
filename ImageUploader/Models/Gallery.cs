@@ -12,6 +12,7 @@ namespace ImageUploader.Models
         public string GalleryUrl { get; set; }
         public string Title { get; set; }
 
+        //One-to-many relationship
         public ICollection<GalleryImage> GalleryImages { get; set; }
     }
 }

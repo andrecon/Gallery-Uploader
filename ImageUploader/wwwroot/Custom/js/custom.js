@@ -12,7 +12,7 @@ FormObjects[1] = [];
 //Method to get ist of ID and display them in our drodown menu
 function loadGalleryIds()
 {
-    //Call api to get list of all the ids
+    //Call api to get list of all the ids AJAX
     $.ajax({
         type: 'GET',
         url: '/api/Gallery/',
@@ -36,6 +36,7 @@ function loadGalleries(result)
         for(i in result)
         {
 
+            //Using jQuery
             $("#selectImageGallery").append("<option value=' " + result[i].gelleryID + " '>" + result[i].title + "</option>");
         }
     }
@@ -130,7 +131,7 @@ function PreviewFiles()
     var files = document.querySelector('input[type=file]').files;
 
     //Read the selected files for upload
-    console.log(files.length);
+
     function readAndPreview(file)
     {
         //Making sure file.name matches our extension criterias
@@ -268,6 +269,7 @@ function BuildImageTableRow(image)
 
 function deleteGallery()
 {
+
     var id = $("#selectImageGallery").val();
 
     //Adding a bootstrap model to ask if they want to proceed with the deleteion
@@ -301,7 +303,151 @@ function confimDeleteGallery()
     $.ajax(ajaxOptions);
 }
 
+
+//Method to edit gallery
 function editGallery()
 {
+    var title = $("#selectImageGallery option:selected" ).text();
 
+    var id = $("#selectImageGallery").val();
+    $("#EditGalleryModal").modal('show');
+    $("#EditGalleryModal .modal-title").html("Edit Gallery : " + title);
+    //$("#EditGalleryModal .modal-title").html("Edit Gallery : " + id);
+    //If problems, change id="galleryID"
+    $("#EditGalleryModal #galleryId").text(id);
+
+
+    $.ajax({
+        type: 'GET',
+        url: '/api/Gallery/' + id,
+        dataType: 'json',
+        success: function(data)
+        {
+            $("#GalleryTitleEdit").val(data[0].gallery_Title);
+
+            //If any table body, exist...remove it
+            $("#EditGalleryTable tbody").remove();
+            $("#EditGalleryTable").append("<tbody></tbody>");
+
+
+            $.each(data, function(key,value)
+            {
+                $("#EditGalleryTable tbody").append(BuildEditRow(value));
+            });
+        }
+    });
+}
+
+
+//Dynamically create table rows
+function BuildEditRow(value)
+{
+    var newEditRow = "<tr>" +
+                        "<td>" +
+                            "<div class=''>" + 
+                                "<input name='Image_Id[]' hidden class='form-control col-xs-3' value='" + value.image_Id + "'/>" +
+                                "<img name='photo[]' style='border:1px solid' width='100' height='100' class='image-tag' src= '" + value.image_Path + "' " + "/ >" +
+                            "</div>" +
+                        "</td>" +
+                        "<td>" +
+                            "<div class=''>" +
+                                "<input name='ImageCaption[]' class='form-control col-xs-3' value='" + value.image_Caption + "' placeholder='Enter Image Caption' " + "/>" +
+                            "</div>" +
+                        "</td>" +
+                        "<td>" +
+                            "<div class-'btn-group' role='group' aria-label='Perform Actions'>" +
+                                "<input type='file' name='File[]' style='display:none' onchange='previewImg(this)'" + "/>" +   
+                                "<button type='button' name='Upload' class='btn btn-success btn-sm' onclick='openFileExplorer(this)' " + ">" +
+                                    "<span>" +
+                                        "<i class='fa fa-upload' aria-hidden='true'>" + "</i>" +
+                                    "</span>" +
+                                "</button>" +
+                            "</div>" + 
+                        "</td>" +
+                    "</tr>"; 
+
+
+    return newEditRow;
+}
+
+
+function openFileExplorer(item)
+{
+    //trigger click event for that file
+    $(item).closest("tr").find("input[type='file']").trigger('click');
+}
+
+
+//Select the file reader and display it
+function previewImg(input) {
+    var parent_element = $(input).closest("tr");
+    if(input.files && input.files[0])
+    {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            $(parent_element).find('img').attr('src', e.target.result);
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+
+var GalleryObjects = [];       //Will hold stuff like [[Image1,caption1,id1], [Image2,caption2,id2], ...]
+GalleryObjects[0] = [];
+GalleryObjects[1] = [];
+
+function AjaxUpdateGallery(formData)
+{
+    var form_Data = new FormData(formData);
+
+
+    //getAll  method will return the value array associated with the given key from withing the FormData
+    var ids = form_Data.getAll('Image_Id[]');
+    var captions = form_Data.getAll('ImageCaption[]');
+    
+
+    for (var counter = 0; counter < ids.length; counter++)
+    {
+        GalleryObjects[0].push(ids[counter]);
+        GalleryObjects[1].push(captions[counter]);
+    }
+
+    for(var i = 0, imageCaption, imageId; imageCaption = GalleryObjects[1][i], imageId = GalleryObjects[0][i]; i++)
+    {
+        form_Data.append('imageId[]', imageId);
+        form_Data.delete('Image_Id[]');
+        form_Data.append('imageCaption[]', imageCaption);
+        form_Data.delete('ImageCaption[]');
+    }
+
+    var id = $("#EditGalleryModal #galleryId").text();
+
+    console.log(formData);
+
+    var ajaxOptions = {
+        type: "PUT",
+        url: "/api/Gallery/" + id,
+        data: form_Data,
+        success: function(result)
+        {
+            alert("Gallery Updated Sucessfully");
+            //window.location.href = "/Home/Index";
+        },
+        error: function () {
+            alert("Could Not Update Gallery");
+        } 
+    }
+
+    //submitting options, making sure its a multiple data
+    if($(formData).attr('enctype') == "multipart/form-data")
+    {
+        ajaxOptions["contenType"] = false;
+        ajaxOptions["processData"] = false;
+    }
+    
+
+
+    $.ajax(ajaxOptions);
+    
+    return false;
 }

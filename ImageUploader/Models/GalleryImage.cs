@@ -12,7 +12,7 @@ namespace ImageUploader.Models
         public string Caption { get; set; }
         public int GalleryId { get; set; }
 
-        //One-to-many relationship
+
         public Gallery Gallery { get; set; }
     }
 }
